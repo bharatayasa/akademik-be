@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Hari {
+  Senin
+  Selasa
+  Rabu
+  Kamis
+  Jumat
+  Sabtu
+}
+
+enum Status {
+  Hadir
+  TidakHadir
+  Izin
+  Sakit
+}
+
+enum Role {
+  admin
+  guru
+  siswa
+}
+
+enum JenisKelamin {
+  LakiLaki
+  Perempuan
+}
+
+enum TingkatKelas {
+  X
+  XI
+  XII
+}
+
+enum Semester {
+  Ganjil
+  Genap
+}
+
+model Jadwal {
+  id_jadwal         Int            @id @default(autoincrement())
+  id_kelas          Int
+  id_mata_pelajaran Int
+  id_guru           Int
+  hari              Hari?
+  jam_mulai         DateTime?
+  jam_selesai       DateTime?
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @updatedAt
+  deleted_at        DateTime?
+
+  kelas             Kelas?         @relation(fields: [id_kelas], references: [id_kelas])
+  mata_pelajaran    MataPelajaran? @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
+  guru              Guru?          @relation(fields: [id_guru], references: [id_guru])
+  kehadiran         Kehadiran[]
+}
+
+model Kehadiran {
+  id_kehadiran   Int           @id @default(autoincrement())
+  id_siswa       Int
+  id_jadwal      Int
+  tanggal        DateTime?
+  status         Status?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  deleted_at     DateTime?
+
+  siswa          Siswa?        @relation(fields: [id_siswa], references: [id_siswa])
+  jadwal         Jadwal?       @relation(fields: [id_jadwal], references: [id_jadwal])
+}
+
+model Kelas {
+  id_kelas       Int           @id @default(autoincrement())
+  id_guru        Int
+  nama_kelas     String
+  tingkat        TingkatKelas
+  semester       Semester
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  deleted_at     DateTime?
+
+  guru           Guru?         @relation(fields: [id_guru], references: [id_guru])
+  siswa          Siswa[]
+  jadwal         Jadwal[]
+}
+
+model MataPelajaran {
+  id_mata_pelajaran Int        @id @default(autoincrement())
+  nama_mata_pelajaran String
+  deskripsi      String?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  deleted_at     DateTime?
+
+  jadwal         Jadwal[]
+  nilai          Nilai[]
+}
+
+model Nilai {
+  id_nilai          Int           @id @default(autoincrement())
+  id_siswa          Int
+  id_mata_pelajaran Int
+  nilai             Int?
+  tingkat           TingkatKelas
+  semester          Semester
+  tanggal           DateTime?
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+  deleted_at        DateTime?
+
+  siswa             Siswa?           @relation(fields: [id_siswa], references: [id_siswa])
+  mata_pelajaran    MataPelajaran?   @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
+}
+
+model Guru {
+  id_guru           Int           @id @default(autoincrement())
+  nama              String
+  tanggal_lahir     DateTime
+  jenis_kelamin     JenisKelamin
+  alamat            String?
+  no_telepon        String?       @unique
+  email             String?       @unique
+  status_guru       String?
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+  deleted_at        DateTime?
+
+  kelas             Kelas[]
+  jadwal            Jadwal[]
+  users             User[]        @relation("GuruUserRelation")
+}
+
+model Siswa {
+  id_siswa       Int           @id @default(autoincrement())
+  id_kelas       Int
+  nama           String
+  tanggal_lahir  DateTime
+  jenis_kelamin  JenisKelamin
+  alamat         String?
+  no_telepon     String?
+  email          String?       @unique
+  status_siswa   String?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  deleted_at     DateTime?
+
+  kelas          Kelas?        @relation(fields: [id_kelas], references: [id_kelas])
+  kehadiran      Kehadiran[]
+  nilai          Nilai[]
+  users          User[]        @relation("SiswaUserRelation")
+}
+
+model User {
+  id_user        Int           @id @default(autoincrement())
+  id_siswa       Int?
+  id_guru        Int?
+  username       String        @unique
+  password_hash  String
+  role           Role
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  deleted_at     DateTime?
+
+  siswa          Siswa?        @relation("SiswaUserRelation", fields: [id_siswa], references: [id_siswa])
+  guru           Guru?         @relation("GuruUserRelation", fields: [id_guru], references: [id_guru])
+}
