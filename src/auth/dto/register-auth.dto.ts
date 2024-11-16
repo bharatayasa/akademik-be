@@ -6,7 +6,7 @@ export enum Role {
     SISWA = 'siswa'
 }
 
-export class CreateUserDto {
+export class RgisterAuthDTO {
     @IsOptional()
     @IsInt()
     id_siswa?: number;

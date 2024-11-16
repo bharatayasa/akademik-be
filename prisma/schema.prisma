@@ -60,13 +60,13 @@ model Jadwal {
   jam_mulai         DateTime?
   jam_selesai       DateTime?
   created_at        DateTime       @default(now())
-  updated_at        DateTime       @updatedAt
+  updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
-  kelas             Kelas?         @relation(fields: [id_kelas], references: [id_kelas])
-  mata_pelajaran    MataPelajaran? @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
-  guru              Guru?          @relation(fields: [id_guru], references: [id_guru])
-  kehadiran         Kehadiran[]
+  // kelas             Kelas?         @relation(fields: [id_kelas], references: [id_kelas])
+  // mata_pelajaran    MataPelajaran? @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
+  // guru              Guru?          @relation(fields: [id_guru], references: [id_guru])
+  // kehadiran         Kehadiran[]
 }
 
 model Kehadiran {
@@ -76,11 +76,11 @@ model Kehadiran {
   tanggal        DateTime?
   status         Status?
   created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  siswa          Siswa?        @relation(fields: [id_siswa], references: [id_siswa])
-  jadwal         Jadwal?       @relation(fields: [id_jadwal], references: [id_jadwal])
+  // siswa          Siswa?        @relation(fields: [id_siswa], references: [id_siswa])
+  // jadwal         Jadwal?       @relation(fields: [id_jadwal], references: [id_jadwal])
 }
 
 model Kelas {
@@ -90,12 +90,12 @@ model Kelas {
   tingkat        TingkatKelas
   semester       Semester
   created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  guru           Guru?         @relation(fields: [id_guru], references: [id_guru])
-  siswa          Siswa[]
-  jadwal         Jadwal[]
+  // guru           Guru?         @relation(fields: [id_guru], references: [id_guru])
+  // siswa          Siswa[]
+  // jadwal         Jadwal[]
 }
 
 model MataPelajaran {
@@ -103,11 +103,11 @@ model MataPelajaran {
   nama_mata_pelajaran String
   deskripsi      String?
   created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  jadwal         Jadwal[]
-  nilai          Nilai[]
+  // jadwal         Jadwal[]
+  // nilai          Nilai[]
 }
 
 model Nilai {
@@ -119,11 +119,11 @@ model Nilai {
   semester          Semester
   tanggal           DateTime?
   created_at        DateTime      @default(now())
-  updated_at        DateTime      @updatedAt
+  updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
-  siswa             Siswa?           @relation(fields: [id_siswa], references: [id_siswa])
-  mata_pelajaran    MataPelajaran?   @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
+  // siswa             Siswa?           @relation(fields: [id_siswa], references: [id_siswa])
+  // mata_pelajaran    MataPelajaran?   @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
 }
 
 model Guru {
@@ -136,12 +136,12 @@ model Guru {
   email             String?       @unique
   status_guru       String?
   created_at        DateTime      @default(now())
-  updated_at        DateTime      @updatedAt
+  updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
-  kelas             Kelas[]
-  jadwal            Jadwal[]
-  users             User[]        @relation("GuruUserRelation")
+  // kelas             Kelas[]
+  // jadwal            Jadwal[]
+  // users             User[]        @relation("GuruUserRelation")
 }
 
 model Siswa {
@@ -155,13 +155,13 @@ model Siswa {
   email          String?       @unique
   status_siswa   String?
   created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  kelas          Kelas?        @relation(fields: [id_kelas], references: [id_kelas])
-  kehadiran      Kehadiran[]
-  nilai          Nilai[]
-  users          User[]        @relation("SiswaUserRelation")
+  // kelas          Kelas?        @relation(fields: [id_kelas], references: [id_kelas])
+  // kehadiran      Kehadiran[]
+  // nilai          Nilai[]
+  // users          User[]        @relation("SiswaUserRelation")
 }
 
 model User {
@@ -172,9 +172,15 @@ model User {
   password_hash  String
   role           Role
   created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  siswa          Siswa?        @relation("SiswaUserRelation", fields: [id_siswa], references: [id_siswa])
-  guru           Guru?         @relation("GuruUserRelation", fields: [id_guru], references: [id_guru])
+  // siswa          Siswa?        @relation("SiswaUserRelation", fields: [id_siswa], references: [id_siswa])
+  // guru           Guru?         @relation("GuruUserRelation", fields: [id_guru], references: [id_guru])
+}
+
+model BlacklistedToken {
+    id        Int      @id @default(autoincrement())
+    token     String   @unique @db.VarChar(255)
+    createdAt DateTime @default(now())
 }
