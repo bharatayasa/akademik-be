@@ -46,11 +46,34 @@ export class UsersService {
     return findUserById;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User>{
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(updateUserDto.password_hash, saltRounds);
+
+    const updateUser = await this.prisma.user.update({
+      where: {id_user: id},
+      data: {
+        id_siswa      : updateUserDto.id_siswa || null,
+        id_guru       : updateUserDto.id_guru || null,
+        username      : updateUserDto.username, 
+        role          : updateUserDto.role, 
+        password_hash : hashedPassword
+      }
+    })
+
+    return updateUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const deleteUser = await this.prisma.user.update({
+      where: {
+        id_user : id
+      }, 
+      data: {
+        deleted_at: new Date()
+      }
+    })
+
+    return deleteUser
   }
 }
