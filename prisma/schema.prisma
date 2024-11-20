@@ -22,7 +22,7 @@ enum Hari {
   Sabtu
 }
 
-enum Status {
+enum StatusKehadiran {
   Hadir
   TidakHadir
   Izin
@@ -51,6 +51,17 @@ enum Semester {
   Genap
 }
 
+enum siswaStatus {
+  Aktif
+  Lulus
+  Dropout
+}
+
+enum guruStatus {
+  Aktif
+  Nonaktif
+}
+
 model Jadwal {
   id_jadwal         Int            @id @default(autoincrement())
   id_kelas          Int
@@ -74,7 +85,7 @@ model Kehadiran {
   id_siswa       Int
   id_jadwal      Int
   tanggal        DateTime?
-  status         Status?
+  status         StatusKehadiran?
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
@@ -134,14 +145,14 @@ model Guru {
   alamat            String?
   no_telepon        String?       @unique
   email             String?       @unique
-  status_guru       String?
+  status_guru       guruStatus
   created_at        DateTime      @default(now())
   updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
   // kelas             Kelas[]
   // jadwal            Jadwal[]
-  // users             User[]        @relation("GuruUserRelation")
+  users             User[]        @relation("GuruUserRelation")
 }
 
 model Siswa {
@@ -153,7 +164,7 @@ model Siswa {
   alamat         String?
   no_telepon     String?
   email          String?       @unique
-  status_siswa   String?
+  status_siswa   siswaStatus
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
@@ -161,7 +172,7 @@ model Siswa {
   // kelas          Kelas?        @relation(fields: [id_kelas], references: [id_kelas])
   // kehadiran      Kehadiran[]
   // nilai          Nilai[]
-  // users          User[]        @relation("SiswaUserRelation")
+  users          User[]        @relation("SiswaUserRelation")
 }
 
 model User {
@@ -175,8 +186,8 @@ model User {
   updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  // siswa          Siswa?        @relation("SiswaUserRelation", fields: [id_siswa], references: [id_siswa])
-  // guru           Guru?         @relation("GuruUserRelation", fields: [id_guru], references: [id_guru])
+  siswa          Siswa?        @relation("SiswaUserRelation", fields: [id_siswa], references: [id_siswa])
+  guru           Guru?         @relation("GuruUserRelation", fields: [id_guru], references: [id_guru])
 }
 
 model BlacklistedToken {

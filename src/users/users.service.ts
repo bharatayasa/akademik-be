@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '@prisma/client';
+import { User, Siswa } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 
@@ -25,10 +25,13 @@ export class UsersService {
     return newUser;
   }
 
-  async findAll() :Promise<User[]>{
+  async findAll() :Promise<(User & {siswa: Siswa})[]>{
     const findAllUser = await this.prisma.user.findMany({
       where: {
         deleted_at: null,
+      }, 
+      include: {
+        siswa: true
       }
     })
 

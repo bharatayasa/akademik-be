@@ -45,13 +45,23 @@ export class UsersController {
       }
 
       const formatData = usersData.map(userData => ({
-        id_user   : userData.id_user,
-        usename   : userData.username, 
-        role      : userData.role, 
-        created_at: moment(userData.created_at).format('YYYY-MM-DD'),
-        updated_at: moment(userData.updated_at).format('YYYY-MM-DD'),
-        deleted_at: moment(userData.deleted_at).format('YYYY-MM-DD'),
-      }))
+        id_user: userData.id_user,
+        username: userData.username, 
+        role: userData.role, 
+        siswa: userData.siswa
+          ? {
+              nama: userData.siswa.nama,
+              alamat: userData.siswa.alamat,
+              no_telepon: userData.siswa.no_telepon,
+              email: userData.siswa.email,
+              status_siswa: userData.siswa.status_siswa,
+            }
+          : null,
+        date_and_time: {
+          created_at: moment(userData.created_at).format('YYYY-MM-DD'),
+          updated_at: moment(userData.updated_at).format('YYYY-MM-DD'),
+        },
+      }));      
 
       return res.status(HttpStatus.OK).json({
         message: "success to get all data", 
@@ -92,7 +102,6 @@ export class UsersController {
         role      : userData.role,
         created_at: moment(userData.created_at).format('YYYY-MM-DD'),
         updated_at: moment(userData.updated_at).format('YYYY-MM-DD'),
-        deleted_at: userData.deleted_at ? moment(userData.deleted_at).format('YYYY-MM-DD') : null,
       };
   
       return res.status(HttpStatus.OK).json({
@@ -101,7 +110,7 @@ export class UsersController {
       });
     } catch (error) {
       console.error("Error fetching user by ID:", error);
-  
+
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: "Internal server error",
         error: error.message,
