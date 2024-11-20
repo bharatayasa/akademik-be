@@ -76,7 +76,7 @@ model Jadwal {
 
   // kelas             Kelas?         @relation(fields: [id_kelas], references: [id_kelas])
   // mata_pelajaran    MataPelajaran? @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
-  // guru              Guru?          @relation(fields: [id_guru], references: [id_guru])
+  guru              Guru?          @relation(fields: [id_guru], references: [id_guru])
   // kehadiran         Kehadiran[]
 }
 
@@ -104,7 +104,7 @@ model Kelas {
   updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  // guru           Guru?         @relation(fields: [id_guru], references: [id_guru])
+  guru           Guru?         @relation(fields: [id_guru], references: [id_guru])
   // siswa          Siswa[]
   // jadwal         Jadwal[]
 }
@@ -150,8 +150,8 @@ model Guru {
   updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
-  // kelas             Kelas[]
-  // jadwal            Jadwal[]
+  kelas             Kelas[]
+  jadwal            Jadwal[]
   users             User[]        @relation("GuruUserRelation")
 }
 

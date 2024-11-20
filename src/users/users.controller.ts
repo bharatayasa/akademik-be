@@ -35,45 +35,68 @@ export class UsersController {
   @UseGuards(AuthGuard) 
   async findAll(@Res() res: Response) {
     try {
-      const usersData = await this.usersService.findAll()
-
-      if (!usersData) {
+      const usersData = await this.usersService.findAll();
+  
+      if (!usersData || usersData.length === 0) {
         return res.status(HttpStatus.NOT_FOUND).json({
-          message: "data not found", 
-          data: usersData
-        })
+          message: "Data not found",
+          data: [],
+        });
       }
-
-      const formatData = usersData.map(userData => ({
-        id_user: userData.id_user,
-        username: userData.username, 
-        role: userData.role, 
-        siswa: userData.siswa
-          ? {
+  
+      const formatData = usersData.map(userData => {
+        const baseData = {
+          id_user: userData.id_user,
+          username: userData.username,
+          role: userData.role,
+          date_and_time: {
+            created_at: moment(userData.created_at).format("YYYY-MM-DD"),
+            updated_at: moment(userData.updated_at).format("YYYY-MM-DD"),
+          },
+        };
+  
+        if (userData.role === "guru" && userData.guru) {
+          return {
+            ...baseData,
+            detail: {
+              id_guru: userData.guru.id_guru,
+              nama: userData.guru.nama,
+              alamat: userData.guru.alamat,
+              no_telepon: userData.guru.no_telepon,
+              email: userData.guru.email,
+              status_guru: userData.guru.status_guru,
+            },
+          };
+        }
+  
+        if (userData.role === "siswa" && userData.siswa) {
+          return {
+            ...baseData,
+            detail: {
+              id_siswa: userData.siswa.id_siswa,
               nama: userData.siswa.nama,
               alamat: userData.siswa.alamat,
               no_telepon: userData.siswa.no_telepon,
               email: userData.siswa.email,
               status_siswa: userData.siswa.status_siswa,
-            }
-          : null,
-        date_and_time: {
-          created_at: moment(userData.created_at).format('YYYY-MM-DD'),
-          updated_at: moment(userData.updated_at).format('YYYY-MM-DD'),
-        },
-      }));      
-
+            },
+          };
+        }
+  
+        return baseData;
+      });
+  
       return res.status(HttpStatus.OK).json({
-        message: "success to get all data", 
-        data: formatData
-      }) 
+        message: "Success to get all data",
+        data: formatData,
+      });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        message: "internal server error", 
-        error: error
-      })
+        message: "Internal server error",
+        error: error.message || error,
+      });
     }
-  }
+  }  
 
   @Get(':id')
   @Roles('admin')
