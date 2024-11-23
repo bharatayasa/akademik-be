@@ -74,10 +74,10 @@ model Jadwal {
   updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
-  // kelas             Kelas?         @relation(fields: [id_kelas], references: [id_kelas])
-  // mata_pelajaran    MataPelajaran? @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
-  guru              Guru?          @relation(fields: [id_guru], references: [id_guru])
-  // kehadiran         Kehadiran[]
+  kelas             Kelas          @relation(fields: [id_kelas], references: [id_kelas])
+  mata_pelajaran    MataPelajaran  @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
+  guru              Guru           @relation(fields: [id_guru], references: [id_guru])
+  kehadiran         Kehadiran[]
 }
 
 model Kehadiran {
@@ -90,8 +90,8 @@ model Kehadiran {
   updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  // siswa          Siswa?        @relation(fields: [id_siswa], references: [id_siswa])
-  // jadwal         Jadwal?       @relation(fields: [id_jadwal], references: [id_jadwal])
+  siswa          Siswa?        @relation(fields: [id_siswa], references: [id_siswa])
+  jadwal         Jadwal?       @relation(fields: [id_jadwal], references: [id_jadwal])
 }
 
 model Kelas {
@@ -106,7 +106,7 @@ model Kelas {
 
   guru           Guru?         @relation(fields: [id_guru], references: [id_guru])
   // siswa          Siswa[]
-  // jadwal         Jadwal[]
+  jadwal         Jadwal[]
 }
 
 model MataPelajaran {
@@ -117,8 +117,8 @@ model MataPelajaran {
   updated_at     DateTime      @updatedAt @default(now()) 
   deleted_at     DateTime?
 
-  // jadwal         Jadwal[]
-  // nilai          Nilai[]
+  jadwal         Jadwal[]
+  nilai          Nilai[]
 }
 
 model Nilai {
@@ -133,8 +133,8 @@ model Nilai {
   updated_at        DateTime      @updatedAt @default(now()) 
   deleted_at        DateTime?
 
-  // siswa             Siswa?           @relation(fields: [id_siswa], references: [id_siswa])
-  // mata_pelajaran    MataPelajaran?   @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
+  siswa             Siswa?           @relation(fields: [id_siswa], references: [id_siswa])
+  mata_pelajaran    MataPelajaran?   @relation(fields: [id_mata_pelajaran], references: [id_mata_pelajaran])
 }
 
 model Guru {
@@ -170,8 +170,8 @@ model Siswa {
   deleted_at     DateTime?
 
   // kelas          Kelas?        @relation(fields: [id_kelas], references: [id_kelas])
-  // kehadiran      Kehadiran[]
-  // nilai          Nilai[]
+  kehadiran      Kehadiran[]
+  nilai          Nilai[]
   users          User[]        @relation("SiswaUserRelation")
 }
 

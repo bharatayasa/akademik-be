@@ -12,9 +12,12 @@ import { SiswaModule } from './siswa/siswa.module';
 import { GuruModule } from './guru/guru.module';
 import { JadwalModule } from './jadwal/jadwal.module';
 import { KelasModule } from './kelas/kelas.module';
+import { PelajaranModule } from './pelajaran/pelajaran.module';
+import { NilaiModule } from './nilai/nilai.module';
+import { KehadiranModule } from './kehadiran/kehadiran.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, SiswaModule, GuruModule, JadwalModule, KelasModule],
+  imports: [UsersModule, AuthModule, SiswaModule, GuruModule, JadwalModule, KelasModule, PelajaranModule, NilaiModule, KehadiranModule],
   controllers: [
     AppController,
     UsersController
